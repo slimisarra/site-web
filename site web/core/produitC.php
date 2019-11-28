@@ -13,7 +13,7 @@ class produitC
 			die('Erreur: ' . $e->getMessage());
 		}
 	}
-	
+	//sarra
 	
 	function ajouterproduit($produit)
 	{
