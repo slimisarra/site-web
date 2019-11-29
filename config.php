@@ -18,3 +18,4 @@ class config
     return self::$instance;
   }
 }
+?>
