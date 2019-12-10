@@ -1,34 +1,14 @@
-<?php
-   // Get the amount of items in the shopping cart, this will be displayed in the header.
-   $num_items_in_cart = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
-// Get the 4 most recently added products
-$stmt = $pdo->prepare('SELECT * FROM panier ORDER BY date_added DESC LIMIT 4');
-$stmt->execute();
-$recently_added_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// The amounts of products to show on each page
-$num_products_on_each_page = 4;
-// The current page, in the URL this will appear as index.php?page=products&p=1, index.php?page=products&p=2, etc...
-$current_page = isset($_GET['p']) && is_numeric($_GET['p']) ? (int)$_GET['p'] : 1;
-// Select products ordered by the date added
-$stmt = $pdo->prepare('SELECT * FROM panier ORDER BY date_added DESC LIMIT ?,?');
-// bindValue will allow us to use integer in the SQL statement, we need to use for LIMIT
-$stmt->bindValue(1, ($current_page - 1) * $num_products_on_each_page, PDO::PARAM_INT);
-$stmt->bindValue(2, $num_products_on_each_page, PDO::PARAM_INT);
-$stmt->execute();
-// Fetch the products from the database and return the result as an Array
-$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// Get the total number of products
-$total_products = $pdo->query('SELECT * FROM panier')->rowCount();
+<?PHP
+include "../core/produitC.php";
+$produit1C=new produitC();
+$listeproduit=$produit1C->afficherproduit();
+
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
-      <title>HANA Creative Hands &mdash; Site officiel </title>  
-      <form action="index.php?page=femmes" method="post">
-      <meta charset="utf-8">
+      <title>HANA Creative Hands &mdash; Site officiel </title>    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700"> 
@@ -75,7 +55,7 @@ $total_products = $pdo->query('SELECT * FROM panier')->rowCount();
                       <li class="has-children ">
                         <a href="shop.html">Boutique</a>
                         <ul class="dropdown">
-                          <li><a href="index.php?page=femmes">Vetements pour Femmes</a></li>
+                          <li><a href="femmes.html">Vetements pour Femmes</a></li>
                           <li class="has-children">
                             <a href="accessoires.html">Accessoires</a>
                             <ul class="dropdown">
@@ -88,18 +68,18 @@ $total_products = $pdo->query('SELECT * FROM panier')->rowCount();
                       </li>
                       
                       <li class="active"><a href="about.html">A propos de nous</a></li>
-                      <li><a href="catalogue.html">Catalogue</a></li>
-                      <li><a href="nouveautes.html">Nouveautés</a></li>
+                      <li><a href="catalogue.php">Catalogue</a></li>
+                      <li><a href="nouveautes.php">Nouveautés</a></li>
                       <li><a href="contact.html">Contactez nous!</a></li>
                     </ul>
                   </nav>
                 </div>
                 <div class="icons">
                   <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a>
-                  <a href="index.php?page=register" class="icons-btn d-inline-block"><span class="icon-heart-o"></span></a>
-                  <a href="index.php?page=cart" class="icons-btn d-inline-block bag">
-                  <span class="icon-shopping-bag"></span>
-                    <span class="number" > <?php $num_items_in_cart ?> </span>
+                  <a href="#" class="icons-btn d-inline-block"><span class="icon-heart-o"></span></a>
+                  <a href="cart.html" class="icons-btn d-inline-block bag">
+                    <span class="icon-shopping-bag"></span>
+                    <span class="number">2</span>
                   </a>
                   <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span class="icon-menu"></span></a>
                 </div>
@@ -115,41 +95,66 @@ $total_products = $pdo->query('SELECT * FROM panier')->rowCount();
                 <div class="d-flex h-100 text-center align-items-center">
                   <div class="w-100 text-white">
                     <h1 class="display-3">Découvrez </br> notre collection</h1>
+                   
                   </div>
                 </div>
               </div>
             </header>
         
-    <div class="custom-border-bottom py-3">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 mb-0"><a href="index.html">Boutique</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Vetements pour femmes.</strong></div>
-        </div>
-      </div>
-    </div>
 
-   
-
-    <div class="row">
-      <div class="col-lg-4 col-sm-6 mb-4">
-          <div class="card h-100">
-                <?php foreach ($recently_added_products as $product): ?>
-                 <a href="index.php?page=product&id=<?=$product['id']?>" class="card-img-top">
-                   <img src="images/<?=$product['img']?>" width="200" height="200" alt="<?=$product['name']?>" class="card-img-top">
-                   <div class="card-body">
-                        <h4 class="card-title" ><?=$product['name']?> </h4>
-                       <span class="card-title">
-                        &dollar;<?=$product['price']?> </span>
-                        </a>
-                   <?php endforeach; ?>
-                   </div>
-          </div>
-       </div>
-    </div>
+    
+    <?PHP
+          foreach($listeproduit as $row){
+          ?>
+ 
+          <div class="col-lg-4 col-sm-6 mb-4">
+            <div class="card h-100">
+              <img class="card-img-top" src=images/<?PHP echo $row['chemin_image'];?> alt="">              
        
+              <div class="card-body">
+                <h4 class="card-title">
+                  <a href="cart.html"><?PHP echo "'".$row['libelle_produit']."'";?></a>
+                </h4>
+                <p class="card-text"><?PHP echo "Details : ".$row['description'].".";?></p>
+                <p class="card-text"><?PHP echo "Prix : ".$row['prix']."DT";?></p>
+
+                </div>
+              
+              
+              </div>
+            </div>
+          <?PHP 
+        } 
+          ?>
 
 
-
+</div>
+      <!-- Pagination -->
+      <ul class="pagination justify-content-center">
+        <li class="page-item">
+          <a class="page-link" href="femmes.html" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="femmes.html">1</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="femmes2.html">2</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="femmes2.html" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+        </li>
+      </ul>
+    
+    </div>
+      <!-- /.row -->
+    
+   
 
     <footer class="site-footer custom-border-top">
         <div class="container">
@@ -199,11 +204,9 @@ $total_products = $pdo->query('SELECT * FROM panier')->rowCount();
           </div>
         <div class="row pt-5 mt-5 text-center">
           <div class="col-md-12">
-            <p>
-            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" class="text-primary">Colorlib</a>
-            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-            </p>
+              <p>
+                  Site officiel de HANA CREATIVE HANDS <i class="icon-heart" aria-hidden="true"></i> par: <a href="#" target="_blank" class="text-primary">ALPHA TEAM</a>
+              </p>
           </div>
           
         </div>
