@@ -28,7 +28,7 @@ $promotion1=new promotion($_POST['id_promo'],$_POST['id_produit'],$_POST['period
 $promotion1C=new promotionC();
 
 $promotion1C->ajouterPromotion($promotion1);
-header('Location: afficherPromo.php');
+header('Location: listepromotion.php');
 //header('Location: nouvellePromotion.html');
 }
 else {
@@ -40,3 +40,13 @@ else {
 </script>
 <?php /*header('Location: nouvPromo.php');*/ }?>
 
+
+<?php
+$destinataires = "anas.mokhtari@esprit.tn";
+$sujet = "Bienvenue sur Tutovisuel";
+ 
+// en-têtes expéditeur
+$entetes = "From : expediteur@gmail.com\n";
+ 
+mail($destinataires, $sujet, "Le message\nligne2", $entetes);
+?>

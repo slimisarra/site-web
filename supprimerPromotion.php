@@ -14,7 +14,7 @@
             if (isset($_POST['supprimer'])){
                 $promotion2C=new promotionC();
                 $promotion2C->supprimerPromotion($id_promo);
-                header('location:afficherPromo.php');
+                header('location:listepromotion.php');
             }
         }
          
