@@ -1,14 +1,28 @@
 <?php
 session_start();
-include 'function.php';
-// Include functions and connect to the database using PDO MySQL
-
-$pdo = pdo_connect_mysql();
-// Page is set to home (home.php) by default, so when the visitor visits that will be the page they see.
-$page = isset($_GET['page']) && file_exists($_GET['page'] . '.php') ? $_GET['page'] : 'femmes';
-// Include and show the requested page
-include $page . '.php';
-
-
-
+require ('./../script/functions.php');
+$bdd = bdd_connect();
+delete_msg();
+if ($_SESSION['pseudo'] == NULL) {
+    header('Location: ./../index.php');
+    }
+      else {}
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+  <head>
+    <link rel="stylesheet" href="./style_gest.css" />
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Gestion : <?php echo $_SESSION['pseudo']; ?></title>
+    <meta charset="utf-8" />
+    <meta language="FR" />
+   </head>
+  <body>
+    <center>
+
+     <h3><a href="change.php?action=1" class="text-danger">Changer de mot de passe</a></h3>
+     <h3><a href="change.php?action=4">Changer de pseudo</a></h3>
+     <h3><a href="change.php?action=3">Supprimer mon compte</a></h3>
+
+    </center>
+    
